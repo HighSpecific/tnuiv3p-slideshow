@@ -1,5 +1,4 @@
 import { computed, ref, watch } from 'vue'
-import { throwError } from '@tuniao/tnui-vue3-uniapp/utils'
 import type { SetupContext } from 'vue'
 import type { SlideshowEmits, SlideshowProps } from '../types'
 
@@ -7,9 +6,6 @@ export const useSlideShow = (
   props: SlideshowProps,
   emits: SetupContext<SlideshowEmits>['emit']
 ) => {
-  if (!props?.data?.length) {
-    throwError('[tn-slideshow]', '图片数据不能为空')
-  }
   let fadeIntervalTimer: ReturnType<typeof setInterval> | null = null
 
   // 图片总数
@@ -39,6 +35,7 @@ export const useSlideShow = (
   watch(
     () => props.data,
     () => {
+      if (!props.data || props.data.length === 0) return
       _closeFadeInterval()
       setTimeout(() => {
         _next()
@@ -49,6 +46,7 @@ export const useSlideShow = (
     },
     {
       immediate: true,
+      deep: true,
     }
   )
 
